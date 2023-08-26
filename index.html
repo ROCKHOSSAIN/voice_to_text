@@ -13,7 +13,7 @@
             <div class="flex flex-col lg:flex-row items-center justify-center relative border-4 border-red-600">
                 <div class="relative w-full lg:w-1/2">
                     <input id="inputField" class="px-3 py-4 text-sm lg:text-xl w-full border-none" type="text" placeholder="Describe what you want to directly click!!">
-                    <!-- Modified button click event for voice recognition -->
+                    <!-- Modified button click event for voice recognition and generating response -->
                     <button onclick="startVoiceRecognition()" class="absolute right-0 top-0 bottom-0">
                         <a class="btn-primary px-2 lg:px-2 py-2 lg:py-3 sans mr-2"> <i class="fa-solid fa-microphone-lines text-white text-xs md:text-sm lg:text-base "></i> GENERATE</a>
                     </button>
@@ -28,16 +28,19 @@
     
     <!-- JavaScript code -->
     <script>
-        // Function to handle voice recognition
+        // Function to handle voice recognition and generating response
         function startVoiceRecognition() {
             const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
             const recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
 
-            recognition.onresult = (event) => {
+            recognition.onresult = async (event) => {
                 const transcript = event.results[0][0].transcript;
                 document.getElementById('inputField').value = transcript;
+                
+                // Generate response when voice input is captured
+                await generateResponse();
             };
 
             recognition.start();
@@ -67,9 +70,6 @@
             const responseText = responseData.choices[0].message.content;
             document.getElementById('outputArea').value = responseText;
         }
-
-        // Event listener for generate button
-        document.getElementById('generateButton').addEventListener('click', generateResponse);
     </script>
 </body>
 </html>
