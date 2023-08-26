@@ -13,6 +13,7 @@
             <div class="flex flex-col lg:flex-row items-center justify-center relative border-4 border-red-600">
                 <div class="relative w-full lg:w-1/2">
                     <input id="inputField" class="px-3 py-4 text-sm lg:text-xl w-full border-none" type="text" placeholder="Describe what you want to directly click!!">
+                    <!-- Modified button click event for voice recognition -->
                     <button onclick="startVoiceRecognition()" class="absolute right-0 top-0 bottom-0">
                         <a class="btn-primary px-2 lg:px-2 py-2 lg:py-3 sans mr-2"> <i class="fa-solid fa-microphone-lines text-white text-xs md:text-sm lg:text-base "></i> GENERATE</a>
                     </button>
@@ -25,9 +26,12 @@
         </div>
     </section>
     
+    <!-- JavaScript code -->
     <script>
+        // Function to handle voice recognition
         function startVoiceRecognition() {
-            const recognition = new SpeechRecognition() || webkitSpeechRecognition();
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
             recognition.continuous = false;
             recognition.interimResults = false;
 
@@ -38,6 +42,34 @@
 
             recognition.start();
         }
+
+        // Function to generate response
+        async function generateResponse() {
+            const apiKey = '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';
+            const prompt = document.getElementById('inputField').value;
+            
+            const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${apiKey}`
+                },
+                body: JSON.stringify({
+                    model: 'gpt-3.5-turbo',
+                    messages: [
+                        { role: 'system', content: 'You are a helpful assistant.' },
+                        { role: 'user', content: prompt }
+                    ]
+                })
+            });
+            
+            const responseData = await response.json();
+            const responseText = responseData.choices[0].message.content;
+            document.getElementById('outputArea').value = responseText;
+        }
+
+        // Event listener for generate button
+        document.getElementById('generateButton').addEventListener('click', generateResponse);
     </script>
 </body>
 </html>
