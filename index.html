@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voice Assistant</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.4.0/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+    <section class="bg-[#141A31] py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 justify-center items-center">
+            <div class="flex flex-col lg:flex-row items-center justify-center relative border-4 border-red-600">
+                <div class="relative w-full lg:w-1/2">
+                    <input id="inputField" class="px-3 py-4 text-sm lg:text-xl w-full border-none" type="text" placeholder="Describe what you want to directly click!!">
+                    <button onclick="startVoiceRecognition()" class="absolute right-0 top-0 bottom-0">
+                        <a class="btn-primary px-2 lg:px-2 py-2 lg:py-3 sans mr-2"> <i class="fa-solid fa-microphone-lines text-white text-xs md:text-sm lg:text-base "></i> GENERATE</a>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="flex items-center justify-center">
+                <textarea id="outputArea" class="bg-white text-black border-4 border-red-600" cols="30" rows="10"></textarea>
+            </div>
+        </div>
+    </section>
+    
+    <script>
+        function startVoiceRecognition() {
+            const recognition = new SpeechRecognition() || webkitSpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            recognition.onresult = (event) => {
+                const transcript = event.results[0][0].transcript;
+                document.getElementById('inputField').value = transcript;
+            };
+
+            recognition.start();
+        }
+    </script>
+</body>
+</html>
